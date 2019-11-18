@@ -1,5 +1,5 @@
 service:
-  name: serverless-todo-ayesh-app
+  name: serverless-bicket-ayesh-app
 
 plugins:
   - serverless-webpack
@@ -15,16 +15,16 @@ provider:
   runtime: nodejs8.10
 
   stage: ${opt:stage, 'dev'}
-  region: ${opt:region, 'us-west-2'}
+  region: ${opt:region, 'us-west-1'}
 
   tracing:
     lambda: true
     apiGateway: true
 
   environment:
-    TODOS_TABLE: Todos-${self:provider.stage}
-    TODOS_IMAGES_S3_BUCKET: serverless-todo-images-ayesh-${self:provider.stage}
-    TODOS_INDEX: TodosUserIdIndex
+    BILLS_TABLE: bills-${self:provider.stage}
+    BILLS_ATTACHMENTS_S3_BUCKET: serverless-bill-attachments-ayesh-${self:provider.stage}
+    BILLS_INDEX: billsUserIdIndex
   
   iamRoleStatements:
     - Effect: Allow
@@ -38,31 +38,31 @@ provider:
   #       - dynamodb:GetItem
   #       - dynamodb:DeleteItem
   #       - dynamodb:UpdateItem
-  #     Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+  #     Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.BILLS_TABLE}
   #   - Effect: Allow
   #     Action:
   #       - s3:PutObject
   #       - s3:GetObject
-  #     Resource: arn:aws:s3:::${self:provider.environment.TODOS_IMAGES_S3_BUCKET}/*
+  #     Resource: arn:aws:s3:::${self:provider.environment.BILLS_IMAGES_S3_BUCKET}/*
   #   - Effect: Allow
   #     Action:
   #       - dynamodb:Query
-  #     Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.TODOS_INDEX}
+  #     Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.BILLS_TABLE}/index/${self:provider.environment.BILLS_INDEX}
 
 custom:
   documentation:
     api:
       info:
         version: v1.0.0
-        title: Todos API
-        description: Serverless application for todos lists
+        title: Bills API
+        description: Serverless application for bills lists
     models:
-      - name: TodoItem
+      - name: BillItem
         contentType: application/json
-        schema: ${file(src/models/TodoItem.json)}
-      - name: TodoUpdate
+        schema: ${file(src/models/BillItem.json)}
+      - name: BillUpdate
         contentType: application/json
-        schema: ${file(src/models/TodoUpdate.json)}  
+        schema: ${file(src/models/BillUpdate.json)}  
 
 functions:
 
@@ -70,88 +70,88 @@ functions:
     handler: src/lambda/auth/auth0Authorizer.handler
 
   # TODO: Configure this function
-  GetTodos:
-    handler: src/lambda/http/getTodos.handler
+  GetBills:
+    handler: src/lambda/http/getBills.handler
     events:
       - http:
           method: get
-          path: todos
+          path: bills
           cors: true
           authorizer: Auth
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.TODOS_INDEX} 
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.BILLS_TABLE}/index/${self:provider.environment.BILLS_INDEX} 
       - Effect: Allow
         Action:
           - s3:GetObject
-        Resource: arn:aws:s3:::${self:provider.environment.TODOS_IMAGES_S3_BUCKET}/*  
+        Resource: arn:aws:s3:::${self:provider.environment.BILLS_ATTACHMENTS_S3_BUCKET}/*  
 
   # TODO: Configure this function
-  CreateTodo:
-    handler: src/lambda/http/createTodo.handler
+  CreateBill:
+    handler: src/lambda/http/createBill.handler
     events:
       - http:
           method: post
-          path: todos
+          path: bills
           cors: true
           authorizer: Auth
           reqValidatorName: RequestBodyValidator
           documentation:
-            summary: Create a new todo
-            description: Create a new todo
+            summary: Create a new bill
+            description: Create a new bill
             requestModels:
-              'application/json': TodoItem
+              'application/json': BillItem
     iamRoleStatements:
       - Effect: Allow
         Action:
         - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.BILLS_TABLE}
     # TODO: Configure this function
-  UpdateTodo:
-    handler: src/lambda/http/updateTodo.handler
+  UpdateBill:
+    handler: src/lambda/http/updateBill.handler
     events:
       - http:
           method: patch
-          path: todos/{todoId}
+          path: bills/{billId}
           cors: true
           authorizer: Auth
           reqValidatorName: RequestBodyValidator
           documentation:
-            summary: Update a todo
-            description: Update a todo
+            summary: Update a bill
+            description: Update a bill
             requestModels:
-              'application/json': TodoUpdate
+              'application/json': BillUpdate
     iamRoleStatements:
       - Effect: Allow
         Action:
         - dynamodb:UpdateItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}          
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.BILLS_TABLE}          
   # TODO: Configure this function
-  DeleteTodo:
-    handler: src/lambda/http/deleteTodo.handler
+  DeleteBill:
+    handler: src/lambda/http/deleteBill.handler
     events:
       - http:
           method: delete
-          path: todos/{todoId}
+          path: bills/{billId}
           cors: true
           authorizer: Auth
           documentation:
-            summary: Delete a todo
-            description: Delete a todo
+            summary: Delete a bill
+            description: Delete a bill
     iamRoleStatements:
       - Effect: Allow
         Action:
         - dynamodb:DeleteItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}          
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.BILLS_TABLE}          
   # TODO: Configure this function
   GenerateUploadUrl:
     handler: src/lambda/http/generateUploadUrl.handler
     events:
       - http:
           method: post
-          path: todos/{todoId}/attachment
+          path: bills/{billId}/attachment
           cors: true
           authorizer: Auth
           documentation:
@@ -161,31 +161,31 @@ functions:
       - Effect: Allow
         Action:
         - dynamodb:UpdateItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}        
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.BILLS_TABLE}        
       - Effect: Allow
         Action:
           - s3:GetObject
           - s3:PutObject
-        Resource: arn:aws:s3:::${self:provider.environment.TODOS_IMAGES_S3_BUCKET}/*  
+        Resource: arn:aws:s3:::${self:provider.environment.BILLS_ATTACHMENTS_S3_BUCKET}/*  
 
 resources:
   Resources:
     # TODO: Add any necessary AWS resources
-    TodosDynamoDBTable:
+    BillsDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: todoId
+          - AttributeName: billId
             AttributeType: S
           - AttributeName: userId
             AttributeType: S  
         KeySchema:
-          - AttributeName: todoId
+          - AttributeName: billId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.TODOS_TABLE}
+        TableName: ${self:provider.environment.BILLS_TABLE}
         GlobalSecondaryIndexes:
-          - IndexName: ${self:provider.environment.TODOS_INDEX}
+          - IndexName: ${self:provider.environment.BILLS_INDEX}
             KeySchema:
               - AttributeName: userId
                 KeyType: HASH
@@ -203,7 +203,7 @@ resources:
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.environment.TODOS_IMAGES_S3_BUCKET}
+        BucketName: ${self:provider.environment.BILLS_ATTACHMENTS_S3_BUCKET}
         CorsConfiguration:
           CorsRules:
             -
@@ -230,5 +230,5 @@ resources:
               Effect: Allow
               Principal: '*'
               Action: 's3:GetObject'
-              Resource: 'arn:aws:s3:::${self:provider.environment.TODOS_IMAGES_S3_BUCKET}/*'
+              Resource: 'arn:aws:s3:::${self:provider.environment.BILLS_ATTACHMENTS_S3_BUCKET}/*'
         Bucket: !Ref AttachmentsBucket
