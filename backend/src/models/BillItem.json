@@ -2,16 +2,16 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "TodoItem": {
-            "title": "TodoItem",
+            "title": "BillItem",
             "type": "object",
             "properties": {
                 "userId": {
                     "type": "string",
                     "title": "userId"
                 },
-                "todoId": {
+                "billId": {
                     "type": "string",
-                    "title": "todoId"
+                    "title": "billId"
                 },
                 "createdAt": {
                     "type": "string",
@@ -21,13 +21,17 @@
                     "type": "string",
                     "title": "name"
                 },
-                "dueDate": {
+                "billDate": {
                     "type": "string",
-                    "title": "dueDate"
+                    "title": "billDate"
                 },
                 "done": {
                     "type": "boolean",
-                    "title": "done"
+                    "title": "paid"
+                },
+                "paidAt": {
+                    "type": "string",
+                    "title": "paidAt"
                 },
                 "attachmentUrl": {
                     "type": "string",
@@ -36,10 +40,10 @@
             },
             "required": [
                 "createdAt",
-                "done",
-                "dueDate",
+                "paid",
+                "billDate",
                 "name",
-                "todoId",
+                "billId",
                 "userId"
             ]
         }
