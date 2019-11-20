@@ -13,7 +13,9 @@ import {
   Image,
   Loader
 } from 'semantic-ui-react'
-
+import DatePicker from "react-datepicker";
+ 
+import "react-datepicker/dist/react-datepicker.css";
 import { createBill, deleteBill, getBills, patchBill } from '../api/bills-api'
 import Auth from '../auth/Auth'
 import { Bill } from '../types/Bill'
@@ -27,18 +29,26 @@ interface BillsState {
   bills: Bill[]
   newBillName: string
   loadingBills: boolean
+  billDate: Date
 }
 
 export class Bills extends React.PureComponent<BillsProps, BillsState> {
   state: BillsState = {
     bills: [],
     newBillName: '',
-    loadingBills: true
+    loadingBills: true,
+    billDate: new Date()
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newBillName: event.target.value })
   }
+
+  handleBillDateChange = date => {
+    this.setState({
+      billDate: date
+    });
+  };
 
   onEditButtonClick = (billId: string) => {
     this.props.history.push(`/bills/${billId}/edit`)
@@ -46,10 +56,10 @@ export class Bills extends React.PureComponent<BillsProps, BillsState> {
 
   onBillCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
-      const dueDate = this.calculateDueDate()
+      //const dueDate = this.calculateDueDate()
       const newBill = await createBill(this.props.auth.getIdToken(), {
         name: this.state.newBillName,
-        dueDate
+        billDate: this.state.billDate.toDateString()
       })
       this.setState({
         bills: [...this.state.bills, newBill],
@@ -73,15 +83,16 @@ export class Bills extends React.PureComponent<BillsProps, BillsState> {
 
   onBillCheck = async (pos: number) => {
     try {
+      const paidDate = this.calculatePaidAt()
       const bill = this.state.bills[pos]
       await patchBill(this.props.auth.getIdToken(), bill.billId, {
         name: bill.name,
-        dueDate: bill.dueDate,
-        done: !bill.done
+        paidAt: paidDate,
+        paid: !bill.paid
       })
       this.setState({
         bills: update(this.state.bills, {
-          [pos]: { done: { $set: !bill.done } }
+          [pos]: { paid: { $set: !bill.paid } }
         })
       })
     } catch {
@@ -104,7 +115,7 @@ export class Bills extends React.PureComponent<BillsProps, BillsState> {
   render() {
     return (
       <div>
-        <Header as="h1">TODOs</Header>
+        <Header as="h1">Bills</Header>
 
         {this.renderCreateBillInput()}
 
@@ -116,7 +127,7 @@ export class Bills extends React.PureComponent<BillsProps, BillsState> {
   renderCreateBillInput() {
     return (
       <Grid.Row>
-        <Grid.Column width={16}>
+        <Grid.Column width={12}>
           <Input
             action={{
               color: 'teal',
@@ -127,11 +138,18 @@ export class Bills extends React.PureComponent<BillsProps, BillsState> {
             }}
             fluid
             actionPosition="left"
-            placeholder="To change the world..."
+            placeholder="To add bill name..."
             onChange={this.handleNameChange}
           />
         </Grid.Column>
-        <Grid.Column width={16}>
+        <Grid.Column width={8}>
+        <DatePicker
+        selected={this.state.billDate}
+        onChange={this.handleBillDateChange}
+        placeholder="Select Bill Date..."
+      />
+        </Grid.Column>
+        <Grid.Column width={10}>
           <Divider />
         </Grid.Column>
       </Grid.Row>
@@ -150,7 +168,7 @@ export class Bills extends React.PureComponent<BillsProps, BillsState> {
     return (
       <Grid.Row>
         <Loader indeterminate active inline="centered">
-          Loading TODOs
+          Loading Bills
         </Loader>
       </Grid.Row>
     )
@@ -165,14 +183,17 @@ export class Bills extends React.PureComponent<BillsProps, BillsState> {
               <Grid.Column width={1} verticalAlign="middle">
                 <Checkbox
                   onChange={() => this.onBillCheck(pos)}
-                  checked={bill.done}
+                  checked={bill.paid}
                 />
               </Grid.Column>
-              <Grid.Column width={10} verticalAlign="middle">
+              <Grid.Column width={7} verticalAlign="middle">
                 {bill.name}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {bill.dueDate}
+                {bill.billDate}
+              </Grid.Column>
+              <Grid.Column width={3} floated="right">
+                {bill.paidAt}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
@@ -205,9 +226,8 @@ export class Bills extends React.PureComponent<BillsProps, BillsState> {
     )
   }
 
-  calculateDueDate(): string {
+  calculatePaidAt(): string {
     const date = new Date()
-    date.setDate(date.getDate() + 7)
 
     return dateFormat(date, 'yyyy-mm-dd') as string
   }

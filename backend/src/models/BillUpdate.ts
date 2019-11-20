@@ -1,6 +1,5 @@
-export interface TodoUpdate {
+export interface BillUpdate {
   name: string
-  billDate: string
-  done: boolean
   paidAt: string
+  paid: boolean
 }

@@ -9,23 +9,19 @@
                     "type": "string",
                     "title": "name"
                 },
-                "billDate": {
-                    "type": "string",
-                    "title": "billDate"
+                "paidAt": {
+                    "type": "boolean",
+                    "title": "paidAt"
                 },
                 "paid": {
                     "type": "boolean",
                     "title": "paid"
                 },
-                "paidAt": {
-                    "type": "boolean",
-                    "title": "paidAt"
-                }
+                
             },
             "required": [
                 "paidAt",
                 "paid",
-                "billDate",
                 "name"
             ]
         }
