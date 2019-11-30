@@ -35,7 +35,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   }
 
   const createdBillItem = await billAccess.createBill( newBillItem )
-  // TODO: Implement creating a new TODO item
   return {
     statusCode: 201,
     headers: {

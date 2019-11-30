@@ -9,7 +9,7 @@ import { BillAccess } from '../../dataLayer/billAccess'
 const billAccess = new BillAccess()
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  // TODO: Get all TODO items for a current user
+
   const authorization = event.headers.Authorization
   const split = authorization.split(' ')
   const jwtToken = split[1]

@@ -9,8 +9,6 @@ const billAccess = new BillAccess()
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const billId = event.pathParameters.billId
 
-    // TODO: Remove a TODO item by id
-
     await billAccess.deleteBill( billId )
 
     return {

@@ -32,22 +32,6 @@ provider:
         - codedeploy:*
       Resource:
         - '*'
-  #   - Effect: Allow
-  #     Action:
-  #       - dynamodb:PutItem
-  #       - dynamodb:GetItem
-  #       - dynamodb:DeleteItem
-  #       - dynamodb:UpdateItem
-  #     Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.BILLS_TABLE}
-  #   - Effect: Allow
-  #     Action:
-  #       - s3:PutObject
-  #       - s3:GetObject
-  #     Resource: arn:aws:s3:::${self:provider.environment.BILLS_IMAGES_S3_BUCKET}/*
-  #   - Effect: Allow
-  #     Action:
-  #       - dynamodb:Query
-  #     Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.BILLS_TABLE}/index/${self:provider.environment.BILLS_INDEX}
 
 custom:
   documentation:
@@ -69,7 +53,6 @@ functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
-  # TODO: Configure this function
   GetBills:
     handler: src/lambda/http/getBills.handler
     events:
@@ -88,7 +71,6 @@ functions:
           - s3:GetObject
         Resource: arn:aws:s3:::${self:provider.environment.BILLS_ATTACHMENTS_S3_BUCKET}/*  
 
-  # TODO: Configure this function
   CreateBill:
     handler: src/lambda/http/createBill.handler
     events:
@@ -108,7 +90,7 @@ functions:
         Action:
         - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.BILLS_TABLE}
-    # TODO: Configure this function
+
   UpdateBill:
     handler: src/lambda/http/updateBill.handler
     events:
@@ -128,7 +110,7 @@ functions:
         Action:
         - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.BILLS_TABLE}          
-  # TODO: Configure this function
+
   DeleteBill:
     handler: src/lambda/http/deleteBill.handler
     events:
@@ -145,7 +127,7 @@ functions:
         Action:
         - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.BILLS_TABLE}          
-  # TODO: Configure this function
+
   GenerateUploadUrl:
     handler: src/lambda/http/generateUploadUrl.handler
     events:
@@ -170,7 +152,6 @@ functions:
 
 resources:
   Resources:
-    # TODO: Add any necessary AWS resources
     BillsDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:

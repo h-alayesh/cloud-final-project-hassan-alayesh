@@ -11,7 +11,6 @@ const billAccess = new BillAccess()
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const billId = event.pathParameters.billId
 
-  // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
   const attachId = uuid.v4()
 
   const url:String = await billAccess.generateUploadUrl(billId, attachId)

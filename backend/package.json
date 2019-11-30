@@ -1,7 +1,7 @@
 {
-  "name": "serverless-todo-ayesh-app",
+  "name": "serverless-bicket-ayesh-app",
   "version": "1.0.0",
-  "description": "Serverless TODO image app",
+  "description": "Serverless Bicket app",
   "dependencies": {
     "@types/axios": "^0.14.0",
     "@types/http-errors": "^1.6.1",
@@ -28,6 +28,6 @@
     "typescript": "^3.4.1",
     "webpack": "^4.41.2"
   },
-  "author": "Ivan Mushketyk",
+  "author": "Hassan AlAyesh",
   "license": "MIT"
 }
