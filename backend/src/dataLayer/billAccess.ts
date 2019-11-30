@@ -4,7 +4,7 @@ import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 
 const XAWS = AWSXRay.captureAWS(AWS)
 
-import { BillItem } from '../models/Billitem'
+import { BillItem } from '../models/BillItem'
 import { BillUpdate } from '../models/BillUpdate'
 
 export class BillAccess {
@@ -55,7 +55,7 @@ export class BillAccess {
 }
 
 async generateUploadUrl(billId, attachId): Promise<String> {
-    const bucketName = process.env.BILLS_IMAGES_S3_BUCKET
+    const bucketName = process.env.BILLS_ATTACHMENTS_S3_BUCKET
     const urlExpiration = 300
     const s3 = new XAWS.S3({
         signatureVersion: 'v4'
@@ -90,11 +90,11 @@ async generateUploadUrl(billId, attachId): Promise<String> {
     await this.docClient.update({
         TableName: this.billsTable,
         Key: updBillId,
-        UpdateExpression: "set #nm=:nm, dueDate=:dueDate, done=:done",
+        UpdateExpression: "set #nm=:nm, paidAt=:paidAt, paid=:paid",
         ExpressionAttributeValues: {
           ":nm": updBillItem.name,
-          ":dueDate": updBillItem.dueDate,
-          ":done": updBillItem.done
+          ":paidAt": updBillItem.paidAt,
+          ":paid": updBillItem.paid
         },
         ExpressionAttributeNames:{
           "#nm": "name"

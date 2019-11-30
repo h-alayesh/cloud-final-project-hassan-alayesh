@@ -6,6 +6,7 @@ plugins:
   - serverless-reqvalidator-plugin
   - serverless-aws-documentation
   - serverless-iam-roles-per-function
+  - serverless-plugin-tracing
   
 package:
   individually: true
@@ -32,6 +33,11 @@ provider:
         - codedeploy:*
       Resource:
         - '*'
+    - Effect: Allow
+      Action:
+        - xray:*
+      Resource:
+        - '*'    
 
 custom:
   documentation:

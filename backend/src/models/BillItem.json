@@ -25,7 +25,7 @@
                     "type": "string",
                     "title": "billDate"
                 },
-                "done": {
+                "paid": {
                     "type": "boolean",
                     "title": "paid"
                 },
