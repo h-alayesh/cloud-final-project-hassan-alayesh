@@ -1,7 +1,7 @@
 {
-  "name": "serverless-todo-ayesh-app",
+  "name": "serverless-bicket-ayesh-app",
   "version": "1.0.0",
-  "description": "Serverless TODO image app",
+  "description": "Serverless Bicket app",
   "dependencies": {
     "@types/axios": "^0.14.0",
     "@types/http-errors": "^1.6.1",
@@ -22,12 +22,13 @@
     "aws-sdk": "^2.568.0",
     "serverless-aws-documentation": "^1.1.0",
     "serverless-iam-roles-per-function": "^2.0.2",
+    "serverless-plugin-tracing": "^2.0.0",
     "serverless-reqvalidator-plugin": "^1.0.3",
     "serverless-webpack": "^5.3.1",
     "ts-loader": "^5.3.3",
     "typescript": "^3.4.1",
     "webpack": "^4.41.2"
   },
-  "author": "Ivan Mushketyk",
+  "author": "Hassan AlAyesh",
   "license": "MIT"
 }
