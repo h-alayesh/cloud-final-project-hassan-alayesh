@@ -4,17 +4,17 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } f
 
 import * as uuid from 'uuid'
 
-import { TodoAccess } from '../../dataLayer/todoAccess'
+import { BillAccess } from '../../dataLayer/billAccess'
 
-const todoAccess = new TodoAccess()
+const billAccess = new BillAccess()
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const todoId = event.pathParameters.todoId
+  console.log('Processing event: ', event)
+  const billId = event.pathParameters.billId
 
-  // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
-  const imageId = uuid.v4()
+  const attachId = uuid.v4()
 
-  const url:String = await todoAccess.generateUploadUrl(todoId, imageId)
+  const url:String = await billAccess.generateUploadUrl(billId, attachId)
 
   return {
     statusCode: 200,
