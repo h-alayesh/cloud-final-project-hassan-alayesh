@@ -6,7 +6,7 @@ import { CreateBillRequest } from '../../requests/CreateBillRequest'
 
 import * as uuid from 'uuid'
 
-import { parseUserId } from '../../auth/utils'
+import { getUserId } from '../utils'
 
 import { BillAccess } from '../../dataLayer/billAccess'
 
@@ -19,14 +19,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   const newBill: CreateBillRequest = JSON.parse(event.body)
 
-  const authorization = event.headers.Authorization
-  const split = authorization.split(' ')
-  const jwtToken = split[1]
-
   const newBillItem = {
 
     billId: billId,
-    userId: parseUserId(jwtToken),
+    userId: getUserId(jwtToken),
     createdAt: new Date().toISOString(),
     name: newBill.name,
     billDate: newBill.billDate,

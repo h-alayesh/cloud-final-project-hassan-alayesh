@@ -2,18 +2,16 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
-import { parseUserId } from '../../auth/utils'
+import { getUserId } from '../utils'
 
 import { BillAccess } from '../../dataLayer/billAccess'
 
 const billAccess = new BillAccess()
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log('Processing event: ', event)
 
-  const authorization = event.headers.Authorization
-  const split = authorization.split(' ')
-  const jwtToken = split[1]
-  const userId = parseUserId(jwtToken)
+  const userId = getUserId(jwtToken)
 
   if (userId === null) {
     return {

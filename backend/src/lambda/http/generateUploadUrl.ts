@@ -9,6 +9,7 @@ import { BillAccess } from '../../dataLayer/billAccess'
 const billAccess = new BillAccess()
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log('Processing event: ', event)
   const billId = event.pathParameters.billId
 
   const attachId = uuid.v4()
